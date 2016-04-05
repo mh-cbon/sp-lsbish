@@ -1,0 +1,21 @@
+{
+  "name": "@mh-cbon/sp-lsbish",
+  "version": "1.0.0",
+  "description": "Stream parser for LSB init script headers",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "LSB", "header", "init"
+  ],
+  "author": "mh-cbon <mh-cbon@users.noreply.github.com>",
+  "license": "MIT",
+  "dependencies": {
+    "through2": "^2.0.1"
+  },
+  "devDependencies": {
+    "should": "^8.3.0",
+    "split": "^1.0.0"
+  }
+}
