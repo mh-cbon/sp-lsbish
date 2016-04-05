@@ -6,7 +6,8 @@ A node stream parser for LSB (Linux Standard Base) headers of an init script.
 
 Init scripts can expose headers to expose information about the service definition.
 
-Those information starts and end with `### BEGIN INIT INFO`, and are a set of key-value pairs.
+Those information starts by `### BEGIN INIT INFO` and ends with `### END INIT INFO `,
+they are a set of key-value pairs and can have multi-lines value.
 
 They usually looks likes this:
 
@@ -49,7 +50,7 @@ require('fs')
 .pipe(require('split')())
 .pipe(require('@mh-cbon/lsbish')())
 .pipe(require('through2').obj(function (data, enc, cb) {
-  console.lob(data)
+  console.log(data)
   cb(null, data);
 }))
 ```
