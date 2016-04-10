@@ -1,6 +1,6 @@
 {
   "name": "@mh-cbon/sp-lsbish",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Stream parser for LSB init script headers",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,9 @@
     "public": "npm publish --access=public"
   },
   "keywords": [
-    "LSB", "header", "init"
+    "LSB",
+    "header",
+    "init"
   ],
   "author": "mh-cbon <mh-cbon@users.noreply.github.com>",
   "license": "MIT",
