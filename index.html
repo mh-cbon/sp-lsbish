@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Sp-lsbish by mh-cbon</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Sp-lsbish</h1>
+      <h2 class="project-tagline">Stream parser for LSB init script headers</h2>
+      <a href="https://github.com/mh-cbon/sp-lsbish" class="btn">View on GitHub</a>
+      <a href="https://github.com/mh-cbon/sp-lsbish/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/mh-cbon/sp-lsbish/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="sp-lsbish---stream-parser-lsb-init-script-headers" class="anchor" href="#sp-lsbish---stream-parser-lsb-init-script-headers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>sp-lsbish - stream-parser-lsb-init-script-headers</h1>
+
+<p>A node stream parser for LSB (Linux Standard Base) headers of an init script.</p>
+
+<h2>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>Init scripts can expose headers to provide informations about the service definition.</p>
+
+<p>Those information starts with <code>### BEGIN INIT INFO</code> and ends with <code>### END INIT INFO</code>,
+they are a set of key-value pairs and can have multi-lines value.</p>
+
+<p>They usually looks likes this:</p>
+
+<div class="highlight highlight-source-shell"><pre>$ cat /etc/init.d/puppet
+<span class="pl-c">#! /bin/sh</span>
+<span class="pl-c">### BEGIN INIT INFO</span>
+<span class="pl-c"># Provides:          puppet</span>
+<span class="pl-c"># Required-Start:    $network $named $remote_fs $syslog</span>
+<span class="pl-c"># Required-Stop:     $network $named $remote_fs $syslog</span>
+<span class="pl-c"># Should-Start:      puppetmaster apache2</span>
+<span class="pl-c"># Default-Start:     2 3 4 5</span>
+<span class="pl-c"># Default-Stop:      0 1 6</span>
+<span class="pl-c"># Short-Description: puppet agent</span>
+<span class="pl-c"># Description:       The puppet agent connects to a puppet master, requests a</span>
+<span class="pl-c">#                    catalog of resources, and configures the local system.</span>
+<span class="pl-c">### END INIT INFO                                                                                                                                          </span>
+<span class="pl-en">start</span>() {
+...
+}
+
+...</pre></div>
+
+<h1>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install</h1>
+
+<div class="highlight highlight-source-shell"><pre>npm i @mh-cbon/sp-lsbish --save</pre></div>
+
+<h1>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h1>
+
+<p><code>lsbish</code> is a function which takes no arguments
+and returns an <code>object</code> stream
+which expect a by line input.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>fs<span class="pl-pds">'</span></span>)
+.<span class="pl-en">createReadStream</span>(<span class="pl-s"><span class="pl-pds">'</span>/etc/init.d/x11-common<span class="pl-pds">'</span></span>)
+.<span class="pl-en">pipe</span>(<span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>split<span class="pl-pds">'</span></span>)())
+.<span class="pl-en">pipe</span>(<span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>@mh-cbon/sp-lsbish<span class="pl-pds">'</span></span>)())
+.<span class="pl-en">pipe</span>(<span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>through2<span class="pl-pds">'</span></span>).<span class="pl-en">obj</span>(<span class="pl-k">function</span> (<span class="pl-smi">data</span>, <span class="pl-smi">enc</span>, <span class="pl-smi">cb</span>) {
+  <span class="pl-en">console</span>.<span class="pl-c1">log</span>(data)
+  <span class="pl-en">cb</span>(<span class="pl-c1">null</span>, data);
+}))</pre></div>
+
+<p>Which prints out</p>
+
+<div class="highlight highlight-source-js"><pre>{ id<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Provides<span class="pl-pds">'</span></span>, value<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>x11-common<span class="pl-pds">'</span></span> }
+{ id<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Required-Start<span class="pl-pds">'</span></span>, value<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>$remote_fs<span class="pl-pds">'</span></span> }
+{ id<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Required-Stop<span class="pl-pds">'</span></span>, value<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>$remote_fs<span class="pl-pds">'</span></span> }
+{ id<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Default-Start<span class="pl-pds">'</span></span>, value<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>S<span class="pl-pds">'</span></span> }
+{ id<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Default-Stop<span class="pl-pds">'</span></span>, value<span class="pl-k">:</span> <span class="pl-c1">undefined</span> }</pre></div>
+
+<h1>
+<a id="read-more" class="anchor" href="#read-more" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Read more</h1>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/mh-cbon/sp-lsbish">Sp-lsbish</a> is maintained by <a href="https://github.com/mh-cbon">mh-cbon</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
